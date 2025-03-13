@@ -5,19 +5,12 @@ import os
 def load_camera_matrix(filename):
     """
     Loads a 3x3 camera matrix from a text file.
-    The file should include a section with:
-    
-    Camera Matrix (K) in 3x3 format:
-    383.432861 0.000000 322.729065
-    0.000000 383.432861 240.311951
-    0.000000 0.000000 1.000000
-    
     :param filename: Path to the camera matrix text file.
     :return: A 3x3 numpy array of type float32.
     """
     with open(filename, 'r') as f:
         lines = f.readlines()
-        
+
     start_index = None
     for i, line in enumerate(lines):
         if "Camera Matrix (K) in 3x3 format:" in line:
@@ -73,11 +66,8 @@ def depth2pc(depth, K, rgb):
 
 def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
     """
-    Processes each pair of RGB and depth images in the input folder and saves a .npz file
-    in the format expected by Contact-GraspNet:
-      Keys: 'xyz', 'xyz_color', 'K', 'segmap', 'rgb', 'shape'
-    (Note: The raw 'depth' is omitted so that the loader uses the point cloud branch.)
-    
+    Processes each pair of RGB and depth images in the input folder and saves a .npy file
+    with the structure containing rgb, xyz, and label data.
     :param input_folder: Folder containing images (files starting with 'rgb' and 'depth').
     :param output_folder: Folder where processed files will be saved.
     :param camera_matrix: 3x3 camera intrinsic matrix as a numpy array.
@@ -104,25 +94,22 @@ def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
         pc_full, pc_colors = depth2pc(depth, camera_matrix, rgb)
         print(f'PC_Full = {pc_full}\nPC_Colors = {pc_colors}')
 
-        # Prepare data dictionary in the format expected by Contact-GraspNet
+        # Prepare data dictionary
         processed_data = {
-            'xyz': pc_full,                                      # Precomputed point cloud (Nx3)
-            'xyz_color': pc_colors,                              # Colors for each point (Nx3)
-            'K': camera_matrix,                                  # Camera matrix (3x3)
-            'segmap': np.zeros(depth.shape, dtype=np.float32),   # Placeholder segmentation map
-            'rgb': rgb,                                          # Original RGB image
-            'shape': depth.shape                                 # Shape of the depth image
+            'rgb': rgb,                                      # Original RGB image
+            'xyz': pc_full,                                  # Precomputed point cloud (Nx3)
+            'label': np.zeros(depth.shape, dtype=np.float32) # Placeholder segmentation map (NxM)
         }
 
-        # Save as a compressed npz file
-        output_path = os.path.join(output_folder, f"{rgb_image}_data.npz")
-        np.savez_compressed(output_path, **processed_data)
+        # Save as a .npy file
+        output_path = os.path.join(output_folder, f"{rgb_image}_data.npy")
+        np.save(output_path, processed_data)
 
         print(f"Processed and saved: {rgb_image}")
 
 if __name__ == "__main__":
     # Define paths for your images, output folder, and camera matrix file
-    input_folder = "saved_images"              # Folder containing your rgb_*.png and depth_*.png files
+    input_folder = "input_data/softball_and_bleach"              # Folder containing your rgb_*.png and depth_*.png files
     output_folder = "processed_data"   # Folder where processed files will be saved
     camera_matrix_file = "camera_matrix.txt"     # File containing the camera matrix
 
