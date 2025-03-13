@@ -77,7 +77,7 @@ try:
 
             # Save depth image
             depth_filename = os.path.join('saved_depth_and_rgb_images', f'depth_{object_name}_{timestamp}.png')
-            cv2.imwrite(depth_filename, depth_colormap)
+            cv2.imwrite(depth_filename, depth_image)
 
             print(f"Images saved: {rgb_filename}, {depth_filename}")
 
