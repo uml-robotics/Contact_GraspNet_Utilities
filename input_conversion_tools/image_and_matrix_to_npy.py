@@ -58,11 +58,14 @@ def depth2pc(depth, K, rgb):
     # Stack to form the (N x 3) point cloud
     pc_full = np.vstack((world_x, world_y, world_z)).T
 
+    # Reshape pc_full to match the original image resolution (height, width, 3)
+    pc_full_reshaped = pc_full.reshape((height, width, 3))
+
     # Flatten the RGB image to match the point cloud (one color per pixel)
     rgb_flat = rgb.reshape(-1, 3)
-    pc_colors = rgb_flat
+    pc_colors = rgb_flat.reshape((height, width, 3))
 
-    return pc_full, pc_colors
+    return pc_full_reshaped, pc_colors
 
 def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
     """
@@ -81,6 +84,8 @@ def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
     for rgb_image, depth_image in zip(rgb_images, depth_images):
         # Load images
         rgb = cv2.imread(os.path.join(input_folder, rgb_image))
+        rgb = cv2.cvtColor(rgb, cv2.COLOR_BGR2RGB)  # Convert BGR to RGB
+
         # Use IMREAD_UNCHANGED to preserve the original depth bit-depth (e.g., 16-bit)
         depth = cv2.imread(os.path.join(input_folder, depth_image), cv2.IMREAD_UNCHANGED)
         if depth is None:
@@ -92,13 +97,13 @@ def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
 
         # Convert depth to point cloud and get corresponding RGB colors
         pc_full, pc_colors = depth2pc(depth, camera_matrix, rgb)
-        print(f'PC_Full = {pc_full}\nPC_Colors = {pc_colors}')
+        print(f'PC_Full = {pc_full.shape}\nPC_Colors = {pc_colors.shape}')
 
         # Prepare data dictionary
         processed_data = {
             'rgb': rgb,                                      # Original RGB image
-            'xyz': pc_full,                                  # Precomputed point cloud (Nx3)
-            'label': np.zeros(depth.shape, dtype=np.float32) # Placeholder segmentation map (NxM)
+            'xyz': pc_full,                                  # Precomputed point cloud (height x width x 3)
+            'label': np.zeros(depth.shape, dtype=np.float32) # Placeholder segmentation map (height x width)
         }
 
         # Save as a .npy file
@@ -109,7 +114,7 @@ def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
 
 if __name__ == "__main__":
     # Define paths for your images, output folder, and camera matrix file
-    input_folder = "input_data/softball_and_bleach"              # Folder containing your rgb_*.png and depth_*.png files
+    input_folder = "input_data/pear_bottle_mug"              # Folder containing your rgb_*.png and depth_*.png files
     output_folder = "processed_data"   # Folder where processed files will be saved
     camera_matrix_file = "camera_matrix.txt"     # File containing the camera matrix
 
