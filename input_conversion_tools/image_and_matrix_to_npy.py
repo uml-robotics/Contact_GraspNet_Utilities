@@ -114,9 +114,9 @@ def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
 
 if __name__ == "__main__":
     # Define paths for your images, output folder, and camera matrix file
-    input_folder = "input_data/pear_bottle_mug"              # Folder containing your rgb_*.png and depth_*.png files
-    output_folder = "processed_data"   # Folder where processed files will be saved
-    camera_matrix_file = "camera_matrix.txt"     # File containing the camera matrix
+    input_folder = "input_data/ball"              # Folder containing your rgb_*.png and depth_*.png files
+    output_folder = "processed_data"  
+    camera_matrix_file = "input_data/camera_matrix.txt"     # File containing the camera matrix
 
     # Load the camera matrix from the text file
     camera_matrix = load_camera_matrix(camera_matrix_file)
