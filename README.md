@@ -6,7 +6,7 @@ Utilities for working with [Contact-GraspNet](https://github.com/NVlabs/contact-
 
 This repo provides helper tools for:
 - Collecting RGB and RGB-D depth data from an Intel RealSense Depth Camera
-- Converting RGB and RGB-D data into .npy format for Contact-GraspNet (and UOIS)
+- Converting RGB and RGB-D data into .npy format for Contact-GraspNet (and [UOIS](https://github.com/chrisdxie/uois))
 - Installation scripts for Contact-Graspnet (in progress)
 
 ## Getting Started
