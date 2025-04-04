@@ -1,4 +1,10 @@
 import numpy as np
+import os
+import sys
+
+'''
+This is used mainly to understand the architecture of the npy files that are used as input for UOIS and COntact-GraspNet
+'''
 
 def read_and_display_npy(file_path):
     # Load the .npy file
@@ -12,7 +18,7 @@ def read_and_display_npy(file_path):
 
     # If the data is a large array, avoid printing the entire contents
     # and instead show the first few entries
-    if data.size > 100:  # Adjust this value if necessary
+    if data.size > 1000000000:  # Adjust this value if necessary
         print("Displaying the first few elements of the array:")
         print(data[:5])  # Print the first 5 rows/values
     else:
@@ -25,7 +31,12 @@ def read_and_display_npy(file_path):
         print(data[:2, :2, :2])  # Display a small 2x2x2 part of the array
 
 if __name__ == "__main__":
-    # Replace with your .npy file path
-    file_path = "np_files/rgb_Baseball_1551076788361800.png_data.npy"
+    npy_dir = 'npy_files'
+    if not os.path.exists(npy_dir):
+        print(f'No npy_file directory')
+        sys.exit()
+
+    npy_file = 'file.npy' # Change to specific file name
+    file_path = os.path.join(npy_dir, npy_file)
     
     read_and_display_npy(file_path)

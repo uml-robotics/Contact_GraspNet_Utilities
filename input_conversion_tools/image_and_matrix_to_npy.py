@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os
+import sys
 
 def load_camera_matrix(filename):
     """
@@ -113,10 +114,20 @@ def process_and_save_depth_images(input_folder, output_folder, camera_matrix):
         print(f"Processed and saved: {rgb_image}")
 
 if __name__ == "__main__":
-    # Define paths for your images, output folder, and camera matrix file
-    input_folder = "input_data/ball"              # Folder containing your rgb_*.png and depth_*.png files
-    output_folder = "processed_data"  
-    camera_matrix_file = "input_data/camera_matrix.txt"     # File containing the camera matrix
+
+    input_dir = "input_data"
+    if not os.path.exists(input_dir):
+        print("No input data")
+        sys.exit()
+
+    scene_folder = 'scenes' # change to the specific folder containing RGB and RGB-D for specific scenes (rgb_*.png and depth_*.png)
+    input_folder = os.path.join(input_dir, scene_folder)
+
+    output_folder = "processed_data" 
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+ 
+    camera_matrix_file = os.path.join(input_dir, 'camera_matrix.txt')
 
     # Load the camera matrix from the text file
     camera_matrix = load_camera_matrix(camera_matrix_file)

@@ -22,8 +22,8 @@ align_to = rs.stream.color
 align = rs.align(align_to)
 
 # Create a directory to save the images if it doesn't exist
-if not os.path.exists('saved_depth_and_rgb_images'):
-    os.makedirs('saved_depth_and_rgb_images')
+if not os.path.exists('scenes'):
+    os.makedirs('scenes')
 
 try:
     while True:
@@ -65,11 +65,11 @@ try:
             timestamp = int(cv2.getTickCount())  # Use a unique timestamp for file names
 
             # Save RGB image
-            rgb_filename = os.path.join('saved_depth_and_rgb_images', f'rgb_{object_name}_{timestamp}.png')
+            rgb_filename = os.path.join('scenes', f'rgb_{object_name}_{timestamp}.png')
             cv2.imwrite(rgb_filename, color_image)
 
             # Save depth image
-            depth_filename = os.path.join('saved_depth_and_rgb_images', f'depth_{object_name}_{timestamp}.png')
+            depth_filename = os.path.join('scenes', f'depth_{object_name}_{timestamp}.png')
             cv2.imwrite(depth_filename, depth_image)
 
             print(f"Images saved: {rgb_filename}, {depth_filename}")
